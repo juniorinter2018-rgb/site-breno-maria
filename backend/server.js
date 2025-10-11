@@ -1,11 +1,12 @@
-// backend/server.js (Versão Manual Final)
+// backend/server.js (Versão Final de Produção com Porta Dinâmica)
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./db'); 
 
 const app = express();
-const port = 3000;
+// ESTA É A LINHA QUE CORRIGE TUDO:
+const port = process.env.PORT || 3000; // Usa a porta da Render, ou 3000 se estiver no seu PC
 
 app.use(cors());
 app.use(express.json());
@@ -21,5 +22,6 @@ app.get('/api/presentes', async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Servidor rodando na porta http://localhost:${port}`);
+    // Esta mensagem agora mostrará a porta correta
+    console.log(`Servidor rodando na porta ${port}`);
 });

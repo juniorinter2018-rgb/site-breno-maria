@@ -1,28 +1,31 @@
-// script.js (Versão Manual Final)
+// script.js (Versão Final de Produção)
 document.addEventListener('DOMContentLoaded', () => {
 
     // ===================================================================
-    // ÁREA DE CONFIGURAÇÃO - PREENCHIDO COM SUAS INFORMAÇÕES!
+    // ÁREA DE CONFIGURAÇÃO - Seus dados
     // ===================================================================
     const MINHA_CHAVE_PIX = "mariannavidal12345@gmail.com";
-    const MEU_NOME_PIX = "Mariana Vidal da Silva - Nubank";
-    const MEU_NUMERO_WHATSAPP = "5583981367568"; // 55 (Brasil) + 83 (DDD) + Numero
+    const MEU_NOME_PIX = "Marianna Vidal da Silva - Nubank";
+    const MEU_NUMERO_WHATSAPP = "5583981367568";
     // ===================================================================
 
-    const API_URL = 'http://localhost:3000/api';
+    // URL da sua API online na Render (já preenchida)
+    const API_URL = 'https://site-casamento-1-0ufl.onrender.com/api';
+    // ===================================================================
+
     const listaPresentesContainer = document.getElementById('lista-presentes');
     const presenteTemplate = document.getElementById('presente-template');
     const modal = document.getElementById('modal-pix');
     const closeModalBtn = document.querySelector('.fechar-modal');
     const pixInfoContainer = document.getElementById('pix-info');
     
-    const WHATSAPP_LINK_BASE = `https://wa.me/${MEU_NUMERO_WHATSAPP}?text=Oi!%20Estou%20enviando%20o%20comprovante%20do%20presente:`;
+    const WHATSAPP_LINK_BASE = `https://wa.me/${MEU_NUMERO_WHATSAPP}?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20doidos%20Marianna%20e%20Renato!%20Segue%20o%20comprovante%20do:`;
 
     async function carregarPresentes() {
         listaPresentesContainer.innerHTML = '<h2>Carregando presentes...</h2>';
         try {
             const response = await fetch(`${API_URL}/presentes`);
-            if (!response.ok) { throw new Error('Não foi possível carregar os presentes. O servidor backend está ligado?'); }
+            if (!response.ok) { throw new Error('Não foi possível carregar os presentes. Aguarde um instante, o servidor pode estar "acordando".'); }
             const presentes = await response.json();
             listaPresentesContainer.innerHTML = ''; 
             if (presentes.length === 0) { listaPresentesContainer.innerHTML = '<h2>Nenhum presente disponível no momento.</h2>'; return; }

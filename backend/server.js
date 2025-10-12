@@ -1,4 +1,4 @@
-// backend/server.js (Plano B Definitivo - Gerador Manual)
+// backend/server.js (Plano B Definitivo - Corrigido)
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -36,7 +36,15 @@ function gerarPayloadPix(chave, nome, cidade, valor, txid) {
 }
 
 // Rota para buscar os presentes
-app.get('/api/presentes', async (req, res) => { /* ... código ... */ });
+app.get('/api/presentes', async (req, res) => {
+    try {
+        const resultado = await db.query("SELECT * FROM presentes WHERE status = 'disponivel' ORDER BY valor");
+        res.status(200).json(resultado.rows);
+    } catch (error) {
+        console.error("Erro ao buscar presentes:", error);
+        res.status(500).json({ error: 'Ocorreu um erro no servidor.' });
+    }
+});
 
 // Rota para gerar o QR Code com valor (usando a nova função)
 app.post('/api/presentes/:id/gerar-pix', async (req, res) => {
@@ -70,13 +78,32 @@ app.post('/api/presentes/:id/gerar-pix', async (req, res) => {
     }
 });
 
-// ... (O resto do seu server.js continua igual) ...
-app.patch('/api/presentes/:id/confirmar', async (req, res) => { /* ... código ... */ });
-app.get('*', (req, res) => { /* ... código ... */ });
-app.listen(port, () => { /* ... código ... */ });
+// Rota de confirmação com lógica de cotas
+app.patch('/api/presentes/:id/confirmar', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const presenteResult = await db.query("SELECT * FROM presentes WHERE id = $1", [id]);
+        if (presenteResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Presente não encontrado.' });
+        }
+        const presente = presenteResult.rows[0];
+        if (presente.cotas_disponiveis <= 1) {
+            await db.query("UPDATE presentes SET status = 'pago', cotas_disponiveis = 0 WHERE id = $1", [id]);
+        } else {
+            await db.query("UPDATE presentes SET cotas_disponiveis = cotas_disponiveis - 1 WHERE id = $1", [id]);
+        }
+        res.status(200).json({ message: 'Confirmado!' });
+    } catch (error) {
+        console.error("Erro ao confirmar presente:", error);
+        res.status(500).json({ error: 'Não foi possível confirmar.' });
+    }
+});
 
-// --- Funções completas que não mudaram ---
-app.get('/api/presentes', async (req, res) => { try { const r = await db.query("SELECT * FROM presentes WHERE status = 'disponivel' ORDER BY valor"); res.status(200).json(r.rows); } catch (e) { console.error("E:", e); res.status(500).json({ e: 'Erro.' }); } });
-app.patch('/api/presentes/:id/confirmar', async (req, res) => { try { const { id } = req.params; const pR = await db.query("SELECT * FROM presentes WHERE id = $1", [id]); if (pR.rows.length === 0) { return res.status(404).json({ m: 'Não encontrado.' }); } const p = pR.rows[0]; if (p.cotas_disponiveis <= 1) { await db.query("UPDATE presentes SET status = 'pago', cotas_disponiveis = 0 WHERE id = $1", [id]); } else { await db.query("UPDATE presentes SET cotas_disponiveis = cotas_disponiveis - 1 WHERE id = $1", [id]); } res.status(200).json({ m: 'Confirmado!' }); } catch (e) { console.error("E:", e); res.status(500).json({ e: 'Não foi possível confirmar.' }); } });
-app.get('*', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
-app.listen(port, () => { console.log(`Servidor rodando na porta ${port}`); });
+// Rota de "Fallback"
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
+});

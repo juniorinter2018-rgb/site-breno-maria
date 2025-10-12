@@ -1,32 +1,19 @@
-// script.js (Plano B Definitivo - Completo)
+// script.js (Plano B Definitivo - Corrigido)
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- CONFIGURAÇÕES PESSOAIS ---
     const MINHA_CHAVE_PIX = "mariannavidal12345@gmail.com";
     const MEU_NOME_PIX = "Marianna Vidal da Silva - Nubank";
     const MEU_NUMERO_WHATSAPP = "5583981367568";
-
-    // --- CONFIGURAÇÕES DO SITE ---
     const API_URL = '/api';
 
-    // --- MAPEAMENTO DOS ELEMENTOS DA PÁGINA ---
     const listaPresentesContainer = document.getElementById('lista-presentes');
     const presenteTemplate = document.getElementById('presente-template');
     const modal = document.getElementById('modal-pix');
     const closeModalBtn = document.querySelector('.fechar-modal');
     const pixInfoContainer = document.getElementById('pix-info');
     
-    // --- GERAÇÃO DO LINK WHATSAPP ---
     const WHATSAPP_LINK_BASE = `https://wa.me/${MEU_NUMERO_WHATSAPP}?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20noivos%20Marianna%20e%20Renato!%20Segue%20o%20comprovante%20do:`;
 
-
-    // ===================================
-    // FUNÇÕES PRINCIPAIS
-    // ===================================
-
-    /**
-     * Busca os presentes da API e os exibe na tela.
-     */
     async function carregarPresentes() {
         listaPresentesContainer.innerHTML = '<h2>Carregando presentes...</h2>';
         try {
@@ -48,9 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Cria o elemento HTML (card) para um presente.
-     */
     function criarCardDePresente(presente) {
         const cardClone = presenteTemplate.content.cloneNode(true);
         const cardElement = cardClone.firstElementChild;
@@ -69,9 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return cardElement;
     }
 
-    /**
-     * Abre o modal, gera o QR Code dinâmico e exibe as opções.
-     */
     async function abrirModalPix(presente) {
         modal.style.display = 'block';
         pixInfoContainer.innerHTML = `<h3>Gerando QR Code com o valor do presente...</h3><p>Aguarde um instante.</p>`;
@@ -111,9 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Confirma o pagamento, atualiza a UI e redireciona para o WhatsApp.
-     */
     async function confirmarPagamento(presente) {
         const btnConfirmar = document.getElementById('btn-confirmar-pagamento');
         if (btnConfirmar) {
@@ -146,17 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Fecha o modal.
-     */
     function fecharModal() {
         modal.style.display = 'none';
     }
 
-
-    // ===================================
-    // INICIALIZAÇÃO E EVENTOS
-    // ===================================
     carregarPresentes();
     closeModalBtn.addEventListener('click', fecharModal);
     window.addEventListener('click', (event) => {
@@ -164,5 +135,4 @@ document.addEventListener('DOMContentLoaded', () => {
             fecharModal();
         }
     });
-
 });

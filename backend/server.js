@@ -1,9 +1,9 @@
-// backend/server.js (Versão Final com a correção do QrCodePix)
+// backend/server.js (Versão com Detetives para o Valor)
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const db = require('./db'); 
-const { QrCodePix } = require('qrcode-pix'); // 1. CORREÇÃO AQUI (Q maiúsculo)
+const { QrCodePix } = require('qrcode-pix');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -11,16 +11,8 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota para buscar os presentes (continua igual)
-app.get('/api/presentes', async (req, res) => {
-    try {
-        const resultado = await db.query("SELECT * FROM presentes WHERE status = 'disponivel' ORDER BY valor");
-        res.status(200).json(resultado.rows);
-    } catch (error) {
-        console.error("Erro ao buscar presentes:", error);
-        res.status(500).json({ error: 'Ocorreu um erro no servidor.' });
-    }
-});
+// ... (a rota /api/presentes continua igual) ...
+app.get('/api/presentes', async (req, res) => { /* ... código ... */ });
 
 // Rota para gerar o QR Code com valor
 app.post('/api/presentes/:id/gerar-pix', async (req, res) => {
@@ -33,14 +25,20 @@ app.post('/api/presentes/:id/gerar-pix', async (req, res) => {
         }
         const presente = presenteResult.rows[0];
 
-        // 2. CORREÇÃO AQUI (Q maiúsculo)
+        // --- NOSSOS DETETIVES ---
+        console.log("--> Iniciando geração de PIX para o presente:", presente.nome);
+        console.log("--> Valor vindo do banco (tipo):", typeof presente.valor, "| Valor:", presente.valor);
+        const valorNumerico = Number(presente.valor);
+        console.log("--> Valor após conversão para Número (tipo):", typeof valorNumerico, "| Valor:", valorNumerico);
+        // -------------------------
+
         const pix = QrCodePix({
             version: '01',
             key: 'mariannavidal12345@gmail.com',
             name: 'Marianna Vidal da Silva',
             city: 'JOAO PESSOA',
             transactionId: `casamento${id}${Date.now()}`,
-            amount: Number(presente.valor),
+            amount: valorNumerico, // Usando a variável que acabamos de verificar
         });
 
         const qrCodeBase64 = await pix.base64();
@@ -57,7 +55,22 @@ app.post('/api/presentes/:id/gerar-pix', async (req, res) => {
     }
 });
 
-// Rota de confirmação (continua a mesma)
+// ... (o resto do código continua igual) ...
+app.patch('/api/presentes/:id/confirmar', async (req, res) => { /* ... código ... */ });
+app.get('*', (req, res) => { /* ... código ... */ });
+app.listen(port, () => { /* ... código ... */ });
+
+
+// --- Funções completas que não mudaram (para facilitar o copia e cola) ---
+app.get('/api/presentes', async (req, res) => {
+    try {
+        const resultado = await db.query("SELECT * FROM presentes WHERE status = 'disponivel' ORDER BY valor");
+        res.status(200).json(resultado.rows);
+    } catch (error) {
+        console.error("Erro ao buscar presentes:", error);
+        res.status(500).json({ error: 'Ocorreu um erro no servidor.' });
+    }
+});
 app.patch('/api/presentes/:id/confirmar', async (req, res) => {
     try {
         const { id } = req.params;
@@ -77,12 +90,9 @@ app.patch('/api/presentes/:id/confirmar', async (req, res) => {
         res.status(500).json({ error: 'Não foi possível confirmar o presente.' });
     }
 });
-
-// Rota de "Fallback" (continua a mesma)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });

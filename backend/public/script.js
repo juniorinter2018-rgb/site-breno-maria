@@ -1,9 +1,9 @@
-// script.js (Plano C - Versão Final com Link Externo)
+// script.js (Plano C - Versão Final Corrigida)
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- CONFIGURAÇÕES PESSOAIS ---
     const MINHA_CHAVE_PIX = "mariannavidal12345@gmail.com";
-    const MEU_NOME_PIX = "Marianna Vidal da Silva"; // Nome simplificado para compatibilidade
+    const MEU_NOME_PIX = "Marianna Vidal da Silva";
     const MEU_NUMERO_WHATSAPP = "5583981367568";
     const MINHA_CIDADE_PIX = "JOAOPESSOA";
 
@@ -75,9 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function abrirModalPix(presente) {
         modal.style.display = 'block';
-        const valorFormatado = presente.valor.toFixed(2);
+
+        // Converte o valor (que pode ser texto) para um número antes de formatar
+        const valorNumerico = parseFloat(presente.valor);
+        const valorFormatado = valorNumerico.toFixed(2);
         
-        // Montamos um link para um gerador de Pix online confiável
         const linkGeradorPix = `https://gerarpix.com.br/api/v1/qr-code/cob?valor=${valorFormatado}&chave=${MINHA_CHAVE_PIX}&nome=${encodeURIComponent(MEU_NOME_PIX)}&cidade=${MINHA_CIDADE_PIX}&saida=qr-code`;
         const linkCopiaECola = `https://gerarpix.com.br/api/v1/qr-code/cob?valor=${valorFormatado}&chave=${MINHA_CHAVE_PIX}&nome=${encodeURIComponent(MEU_NOME_PIX)}&cidade=${MINHA_CIDADE_PIX}&saida=br-code`;
 
@@ -96,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         
-        // A lógica do botão de confirmação continua a mesma
         document.getElementById('btn-confirmar-pagamento').addEventListener('click', () => confirmarPagamento(presente));
     }
 

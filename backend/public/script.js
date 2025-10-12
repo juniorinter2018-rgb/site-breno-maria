@@ -1,4 +1,4 @@
-// script.js (Versão Final com Redirecionamento para WhatsApp)
+// script.js (Versão Final com texto do WhatsApp corrigido)
 document.addEventListener('DOMContentLoaded', () => {
 
     const MINHA_CHAVE_PIX = "mariannavidal12345@gmail.com";
@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.querySelector('.fechar-modal');
     const pixInfoContainer = document.getElementById('pix-info');
     
-    const WHATSAPP_LINK_BASE = `https://wa.me/${MEU_NUMERO_WHATSAPP}?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20doidos%20Marianna%20e%20Renato!%20Segue%20o%20comprovante%20do:`;
+    // LINHA CORRIGIDA:
+    const WHATSAPP_LINK_BASE = `https://wa.me/${MEU_NUMERO_WHATSAPP}?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20noivos%20Marianna%20e%20Renato!%20Segue%20o%20comprovante%20do:`;
 
-    // As funções carregarPresentes e criarCardDePresente continuam iguais...
     async function carregarPresentes() {
         listaPresentesContainer.innerHTML = '<h2>Carregando presentes...</h2>';
         try {
@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             presentes.forEach(presente => { const card = criarCardDePresente(presente); listaPresentesContainer.appendChild(card); });
         } catch (error) { console.error("Erro:", error); listaPresentesContainer.innerHTML = `<h2 style="color: red;">${error.message}</h2>`; }
     }
+
     function criarCardDePresente(presente) {
         const cardClone = presenteTemplate.content.cloneNode(true);
         const cardElement = cardClone.firstElementChild;
@@ -40,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return cardElement;
     }
 
-    // --- FUNÇÃO ABRIRMODALPIX ATUALIZADA COM A NOVA LÓGICA ---
     function abrirModalPix(presente) {
         modal.style.display = 'block';
         const valorFormatado = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(presente.valor);
@@ -69,14 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Chave Pix copiada!');
         });
 
-        // Lógica do novo botão de confirmação
         const btnConfirmar = document.getElementById('btn-confirmar-pagamento');
         btnConfirmar.addEventListener('click', async () => {
             btnConfirmar.disabled = true;
             btnConfirmar.textContent = 'Confirmando...';
 
             try {
-                // Envia a confirmação para o backend
                 const response = await fetch(`${API_URL}/presentes/${presente.id}/confirmar`, {
                     method: 'PATCH',
                 });
@@ -85,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error('Não foi possível confirmar. Por favor, tente novamente.');
                 }
 
-                // Se a confirmação deu certo, mostra uma mensagem de sucesso
                 pixInfoContainer.innerHTML = `
                     <div style="text-align: center;">
                         <h2>Presente Confirmado! ✅</h2>
@@ -94,13 +91,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
 
-                // Prepara o link do WhatsApp
                 const linkWhatsAppCompleto = `${WHATSAPP_LINK_BASE}%20*${presente.nome}*`;
 
-                // Aguarda 3 segundos e redireciona o usuário
                 setTimeout(() => {
                     window.location.href = linkWhatsAppCompleto;
-                }, 3000); // 3000 milissegundos = 3 segundos
+                }, 3000);
 
             } catch (error) {
                 alert(error.message);

@@ -10,31 +10,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const seletorOrdenacao = document.getElementById('ordenar-presentes');
     const WHATSAPP_LINK_BASE = `https://wa.me/5583981367568?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20noivos%20Marianna%20e%20Renato!%20Segue%20o%20comprovante%20do:`;
 
-    // Função para a Contagem Regressiva
     function iniciarContagemRegressiva() {
-        const dataCasamento = new Date('2025-11-21T17:00:00').getTime(); // Data ajustada para 21 de Novembro
+        const dataCasamento = new Date('2025-11-21T17:00:00').getTime();
         const elementoContagem = document.getElementById('contagem-regressiva');
-
         if (!elementoContagem) return;
-
         const atualizarContagem = () => {
             const agora = new Date().getTime();
             const diferenca = dataCasamento - agora;
-
             if (diferenca < 0) {
                 elementoContagem.innerHTML = "O grande dia chegou!";
                 clearInterval(intervalo);
                 return;
             }
-
             const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
             const horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
             const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
-
             elementoContagem.innerHTML = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
         };
-
         const intervalo = setInterval(atualizarContagem, 1000);
         atualizarContagem();
     }
@@ -72,20 +65,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function abrirModalPix(presente) {
-        modal.style.display = 'block';
-
+        modal.style.display = 'flex'; // <<<<<<< ALTERAÇÃO AQUI para usar flexbox
         if (!presente.pix_copia_e_cola) {
             pixInfoContainer.innerHTML = `<p style="color: red;">Não foi possível gerar o Pix para este presente. Por favor, escolha outro.</p>`;
             return;
         }
-
         const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(presente.pix_copia_e_cola)}`;
-
         pixInfoContainer.innerHTML = `
             <h3>Obrigado pelo seu carinho! ❤️</h3>
             <p>1. Escaneie o QR Code abaixo com o app do seu banco. O valor já está preenchido!</p>
             <div class="pix-manual-info">
-                <img src="${qrCodeImageUrl}" alt="QR Code Pix" style="max-width: 250px; margin: 15px auto; display: block; border: 5px solid white; border-radius: 10px;">
+                <img src="${qrCodeImageUrl}" alt="QR Code Pix">
                 <strong>Ou use o Pix Copia e Cola:</strong>
                 <input type="text" value="${presente.pix_copia_e_cola}" readonly id="pix-copia-cola">
                 <button id="btn-copiar">Copiar Código</button>
@@ -95,14 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button id="btn-confirmar-pagamento">Já fiz o Pix! Confirmar Presente</button>
             </div>
         `;
-
         document.getElementById('btn-copiar').addEventListener('click', () => {
             const input = document.getElementById('pix-copia-cola');
             input.select();
             document.execCommand('copy');
             alert('Código Pix copiado!');
         });
-
         document.getElementById('btn-confirmar-pagamento').addEventListener('click', () => confirmarPagamento(presente));
     }
 
@@ -112,11 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/presentes/${presente.id}/confirmar`, { method: 'PATCH' });
             if (!response.ok) { throw new Error('Não foi possível confirmar.'); }
-
             pixInfoContainer.innerHTML = `<div style="text-align: center;"><h2>Presente Confirmado! ✅</h2><p>Muito obrigado! ❤️</p><p>Você será redirecionado para o WhatsApp...</p></div>`;
             const linkWhats = `${WHATSAPP_LINK_BASE}%20*${presente.nome}*`;
             setTimeout(() => { window.location.href = linkWhats; }, 3000);
-
         } catch (error) {
             alert(error.message);
             if (btn) { btn.disabled = false; btn.textContent = 'Já fiz o Pix!'; }
@@ -125,11 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function fecharModal() { modal.style.display = 'none'; }
 
-    // Inicializações
     iniciarContagemRegressiva();
     carregarPresentes();
 
-    // Event Listeners
     closeModalBtn.addEventListener('click', fecharModal);
     window.addEventListener('click', (event) => { if (event.target == modal) { fecharModal(); } });
     seletorOrdenacao.addEventListener('change', () => {
@@ -140,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderizarPresentes(presentesOrdenados);
     });
 
-    // Efeito Parallax
     const imagemHero = document.querySelector('.hero-imagem');
     window.addEventListener('scroll', () => {
         const scrollPos = window.scrollY;

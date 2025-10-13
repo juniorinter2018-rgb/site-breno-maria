@@ -1,4 +1,4 @@
-// backend/server.js (Solução Carbono - Final)
+// backend/server.js (Solução Saída - Final)
 require('dotenv').config();
 const express = require('express');
 const path = require('path');

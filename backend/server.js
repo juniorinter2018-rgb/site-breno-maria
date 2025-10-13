@@ -1,4 +1,4 @@
-// backend/server.js (Lógica de confirmação melhorada)
+// backend/server.js (com ordenação aleatória)
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -10,10 +10,11 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota para buscar os presentes
+// Rota para buscar os presentes ATUALIZADA para ordem aleatória
 app.get('/api/presentes', async (req, res) => {
     try {
-        const resultado = await db.query("SELECT * FROM presentes WHERE status = 'disponivel' ORDER BY valor");
+        // A mágica acontece aqui: ORDER BY RANDOM()
+        const resultado = await db.query("SELECT * FROM presentes WHERE status = 'disponivel' ORDER BY RANDOM()");
         res.status(200).json(resultado.rows);
     } catch (error) {
         console.error("Erro ao buscar presentes:", error);
@@ -21,11 +22,11 @@ app.get('/api/presentes', async (req, res) => {
     }
 });
 
-// Rota de confirmação ATUALIZADA para retornar o presente atualizado
+// Rota de confirmação
 app.patch('/api/presentes/:id/confirmar', async (req, res) => {
     const { id } = req.params;
     try {
-        await db.query('BEGIN'); // Inicia uma transação
+        await db.query('BEGIN');
 
         const presenteResult = await db.query("SELECT * FROM presentes WHERE id = $1 FOR UPDATE", [id]);
         if (presenteResult.rows.length === 0) {
@@ -41,16 +42,14 @@ app.patch('/api/presentes/:id/confirmar', async (req, res) => {
 
         let updatedPresente;
         if (presente.cotas_disponiveis === 1) {
-            // Se for a última cota, marca como 'pago'
             const updateResult = await db.query("UPDATE presentes SET status = 'pago', cotas_disponiveis = 0 WHERE id = $1 RETURNING *", [id]);
             updatedPresente = updateResult.rows[0];
         } else {
-            // Se não for, apenas decrementa a cota
             const updateResult = await db.query("UPDATE presentes SET cotas_disponiveis = cotas_disponiveis - 1 WHERE id = $1 RETURNING *", [id]);
             updatedPresente = updateResult.rows[0];
         }
 
-        await db.query('COMMIT'); // Confirma a transação
+        await db.query('COMMIT');
         res.status(200).json({ message: 'Confirmado!', presente: updatedPresente });
 
     } catch (error) {
@@ -59,7 +58,6 @@ app.patch('/api/presentes/:id/confirmar', async (req, res) => {
         res.status(500).json({ error: 'Não foi possível confirmar o presente.' });
     }
 });
-
 
 // Rota de "Fallback"
 app.get('*', (req, res) => {

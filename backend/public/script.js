@@ -1,4 +1,4 @@
-// script.js (com redirecionamento para WhatsApp corrigido)
+// script.js (respeitando a ordem aleatória do servidor)
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = '/api';
     let todosOsPresentes = [];
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${API_URL}/presentes`);
             if (!response.ok) { throw new Error('Não foi possível carregar os presentes.'); }
             todosOsPresentes = await response.json();
-            todosOsPresentes.sort((a, b) => a.id - b.id);
+            // A linha que ordenava por ID foi REMOVIDA para manter a ordem aleatória do servidor
             renderizarPresentes(todosOsPresentes);
         } catch (error) {
             console.error("Erro:", error);
@@ -157,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const linkWhats = `${WHATSAPP_LINK_BASE}%20*${presente.nome}*`;
             
-            // <<<<<<<<<<<<<<<<<<<< CORREÇÃO APLICADA AQUI <<<<<<<<<<<<<<<<<<<<
             setTimeout(() => {
                 window.location.href = linkWhats; 
             }, 4000);
@@ -175,16 +174,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeModalBtn.addEventListener('click', fecharModal);
     window.addEventListener('click', (event) => { if (event.target == modal) { fecharModal(); } });
+    
     seletorOrdenacao.addEventListener('change', () => {
         const ordem = seletorOrdenacao.value;
         let presentesOrdenados = [...todosOsPresentes];
-        if (ordem === 'padrao') {
-            presentesOrdenados.sort((a, b) => a.id - b.id);
-        } else if (ordem === 'menor-preco') { 
+        
+        // A opção "Padrão" agora simplesmente usa a lista aleatória original
+        if (ordem === 'menor-preco') { 
             presentesOrdenados.sort((a, b) => parseFloat(a.valor) - parseFloat(b.valor)); 
         } else if (ordem === 'maior-preco') { 
             presentesOrdenados.sort((a, b) => parseFloat(b.valor) - parseFloat(a.valor)); 
         }
+        // Se for "padrão", não faz nada, pois `presentesOrdenados` já é uma cópia da lista aleatória.
+        
         renderizarPresentes(presentesOrdenados);
     });
 

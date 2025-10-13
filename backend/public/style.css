@@ -1,4 +1,4 @@
-/* Estilos Gerais Finais (Completo) */
+/* Estilos Gerais Finais (com scroll inteligente no modal) */
 :root {
     --cor-principal-verde: #556B2F;
     --cor-acento-dourado: #B8860B;
@@ -234,6 +234,10 @@ h1, h2 {
     text-align: center;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
+
+    /* <<<<<<<<<<<<<<<<<<<< CORREÇÃO APLICADA AQUI <<<<<<<<<<<<<<<<<<<< */
+    max-height: 90vh; /* Define uma altura máxima (90% da altura da janela) */
+    overflow-y: auto;  /* Mostra a barra de scroll vertical APENAS se o conteúdo for maior */
 }
 
 .fechar-modal {

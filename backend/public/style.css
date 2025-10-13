@@ -22,10 +22,11 @@ h1, h2 {
     font-weight: 700;
 }
 
+/* === CABEÇALHO CORRIGIDO COM CONTEÚDO CENTRALIZADO === */
 header {
     background-color: var(--cor-principal-verde);
     color: var(--cor-texto-claro);
-    text-align: center;
+    text-align: center; /* ESTA LINHA CENTRALIZA TUDO DENTRO DO HEADER */
     padding: 2rem 1rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -49,6 +50,7 @@ header p {
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     margin-bottom: 1rem;
 }
+/* ======================================================= */
 
 .filtros-container {
     text-align: left;
@@ -168,8 +170,6 @@ header p {
     display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
     overflow: auto; background-color: rgba(0,0,0,0.6); animation: fadeIn 0.3s ease-in-out;
 }
-
-/* === MODAL CORRIGIDO PARA NÃO FICAR "GRANDÃO" === */
 .modal-conteudo {
     background-color: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(12px);
@@ -178,14 +178,13 @@ header p {
     margin: 10% auto;
     padding: 20px 30px;
     border-radius: 16px;
-    max-width: 500px; /* Largura máxima fixa */
-    width: 90%; /* Garante que não quebre em telas muito pequenas */
+    max-width: 500px;
+    width: 90%;
     position: relative;
     text-align: center;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    box-sizing: border-box; /* Garante que padding não afete a largura total */
+    box-sizing: border-box;
 }
-/* ============================================== */
 
 .fechar-modal {
     color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer;
@@ -215,12 +214,18 @@ header p {
     transform: scale(1.05); background-color: #7925c4;
 }
 
+/* === RODAPÉ CORRIGIDO COM TEXTO CENTRALIZADO === */
 footer {
-    text-align: center; padding: 2rem; margin-top: 3rem;
-    background-color: var(--cor-principal-verde); color: var(--cor-texto-claro); opacity: 0.9;
+    text-align: center; /* ESTA LINHA CENTRALIZA O TEXTO DO RODAPÉ */
+    padding: 2rem;
+    margin-top: 3rem;
+    background-color: var(--cor-principal-verde);
+    color: var(--cor-texto-claro);
+    opacity: 0.9;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+/* ============================================ */
 
 @keyframes floatUp {
     from { opacity: 0; transform: translateY(30px); }

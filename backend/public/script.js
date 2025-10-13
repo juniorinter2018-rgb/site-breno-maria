@@ -1,4 +1,4 @@
-// script.js (Textos do Modal otimizados)
+// script.js (com redirecionamento para WhatsApp corrigido)
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = '/api';
     let todosOsPresentes = [];
@@ -73,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(presente.pix_copia_e_cola)}`;
         
-        // <<<<<<<<<<<<<<<<<<<< TEXTOS OTIMIZADOS AQUI <<<<<<<<<<<<<<<<<<<<
         pixInfoContainer.innerHTML = `
             <h3>Obrigado pelo seu carinho! ❤️</h3>
             <p>1. Escaneie o QR Code abaixo com o seu banco.</p>
@@ -144,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             criarAnimacaoCoracoes();
-            pixInfoContainer.innerHTML = `<div style="text-align: center; z-index: 10; position: relative;"><h2>Presente Confirmado! ✅</h2><p>Muito obrigado! ❤️</p><p>Você será redirecionado...</p></div>`;
+            pixInfoContainer.innerHTML = `<div style="text-align: center; z-index: 10; position: relative;"><h2>Presente Confirmado! ✅</h2><p>Muito obrigado! ❤️</p><p>A redirecionar para o WhatsApp...</p></div>`;
             
             const presenteIndex = todosOsPresentes.findIndex(p => p.id === presente.id);
             if (presenteIndex !== -1) {
@@ -157,8 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
             renderizarPresentes(todosOsPresentes);
 
             const linkWhats = `${WHATSAPP_LINK_BASE}%20*${presente.nome}*`;
+            
+            // <<<<<<<<<<<<<<<<<<<< CORREÇÃO APLICADA AQUI <<<<<<<<<<<<<<<<<<<<
             setTimeout(() => {
-                fecharModal(); 
+                window.location.href = linkWhats; 
             }, 4000);
 
         } catch (error) {

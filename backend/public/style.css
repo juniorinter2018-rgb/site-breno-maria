@@ -22,11 +22,10 @@ h1, h2 {
     font-weight: 700;
 }
 
-/* === CABEÇALHO COM CONTEÚDO CENTRALIZADO === */
 header {
     background-color: var(--cor-principal-verde);
     color: var(--cor-texto-claro);
-    text-align: center; /* Esta linha centraliza tudo dentro do header (foto e textos) */
+    text-align: center;
     padding: 2rem 1rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -50,16 +49,14 @@ header p {
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     margin-bottom: 1rem;
 }
-/* ============================================ */
 
-/* === SEÇÃO DE ORDENAÇÃO COM TEXTO À ESQUERDA === */
 .filtros-container {
-    text-align: left; /* Esta linha alinha o "Ordenar por" à esquerda */
+    text-align: left;
     padding: 20px 40px;
     background-color: #fff;
     border-bottom: 1px solid #eee;
-    max-width: 1200px; /* Faz a barra ter a mesma largura da lista de presentes */
-    margin: 0 auto; /* Centraliza a barra na página */
+    max-width: 1200px;
+    margin: 0 auto;
     box-sizing: border-box;
 }
 
@@ -78,7 +75,6 @@ header p {
     font-size: 1rem;
     cursor: pointer;
 }
-/* ============================================== */
 
 .container-presentes {
     display: grid;
@@ -172,6 +168,8 @@ header p {
     display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
     overflow: auto; background-color: rgba(0,0,0,0.6); animation: fadeIn 0.3s ease-in-out;
 }
+
+/* === MODAL CORRIGIDO PARA NÃO FICAR "GRANDÃO" === */
 .modal-conteudo {
     background-color: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(12px);
@@ -180,11 +178,14 @@ header p {
     margin: 10% auto;
     padding: 20px 30px;
     border-radius: 16px;
-    max-width: 90%;
+    max-width: 500px; /* Largura máxima fixa */
+    width: 90%; /* Garante que não quebre em telas muito pequenas */
     position: relative;
     text-align: center;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    box-sizing: border-box; /* Garante que padding não afete a largura total */
 }
+/* ============================================== */
 
 .fechar-modal {
     color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer;

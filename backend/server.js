@@ -1,4 +1,4 @@
-// backend/server.js (Plano Manual - Final e Definitivo)
+// backend/server.js (Solução Carbono - Final)
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota para buscar os presentes
+// Rota para buscar os presentes, agora incluindo o código pix
 app.get('/api/presentes', async (req, res) => {
     try {
         const resultado = await db.query("SELECT * FROM presentes WHERE status = 'disponivel' ORDER BY valor");
@@ -21,7 +21,7 @@ app.get('/api/presentes', async (req, res) => {
     }
 });
 
-// Rota de confirmação com lógica de cotas
+// Rota de confirmação com lógica de cotas (continua a mesma)
 app.patch('/api/presentes/:id/confirmar', async (req, res) => {
     try {
         const { id } = req.params;

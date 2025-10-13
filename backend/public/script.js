@@ -1,10 +1,13 @@
-// script.js (Versão Final com Parallax)
+// script.js (Plano Definitivo - Completo)
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- CONFIGURAÇÕES PESSOAIS ---
     const MINHA_CHAVE_PIX = "mariannavidal12345@gmail.com";
-    const MEU_NOME_PIX = "Marianna Vidal da Silva - Nubank";
+    const MEU_NOME_PIX = "Marianna Vidal da Silva";
     const MEU_NUMERO_WHATSAPP = "5583981367568";
+    const MINHA_CIDADE_PIX = "JOAOPESSOA";
+    
+    // --- CONFIGURAÇÕES DO SITE ---
     const API_URL = '/api';
 
     // --- MAPEAMENTO DOS ELEMENTOS ---
@@ -21,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================
     // FUNÇÕES PRINCIPAIS
     // ===================================
+
     async function carregarPresentes() {
         listaPresentesContainer.innerHTML = '<h2>Carregando presentes...</h2>';
         try {
@@ -64,30 +68,41 @@ document.addEventListener('DOMContentLoaded', () => {
         return cardElement;
     }
 
-    function abrirModalPix(presente) {
+    async function abrirModalPix(presente) {
         modal.style.display = 'block';
-        const valorNumerico = parseFloat(presente.valor);
-        const valorFormatadoParaLink = valorNumerico.toFixed(2);
-        const valorFormatadoParaDisplay = valorNumerico.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        
-        const linkDeCobranca = `https://nubank.com.br/pagar/${MINHA_CHAVE_PIX}/${valorFormatadoParaLink}`;
+        pixInfoContainer.innerHTML = `<h3>Gerando QR Code com o valor do presente...</h3><p>Aguarde um instante.</p>`;
+        try {
+            const response = await fetch(`${API_URL}/presentes/${presente.id}/gerar-pix`, { method: 'POST' });
+            if (!response.ok) { throw new Error('Não foi possível gerar o QR Code. Tente novamente.'); }
+            const data = await response.json();
 
-        pixInfoContainer.innerHTML = `
-            <h3>Obrigado pelo seu carinho! ❤️</h3>
-            <p>Para facilitar, preparamos um link de pagamento com o valor já preenchido.</p>
-            <div class="pix-manual-info">
-                <a href="${linkDeCobranca}" target="_blank" class="link-pagamento-pix">
-                    Clique aqui para Pagar ${valorFormatadoParaDisplay} com Pix
-                </a>
-                <p style="font-size: 0.9rem; margin-top: 15px;">Você será direcionado para uma página segura para escanear o QR Code ou copiar o código.</p>
-            </div>
-            <div class="aviso-importante">
-                <p>Após pagar, volte para esta página e clique no botão abaixo para confirmar seu presente!</p>
-                <button id="btn-confirmar-pagamento">Já paguei! Confirmar Presente</button>
-            </div>
-        `;
-        
-        document.getElementById('btn-confirmar-pagamento').addEventListener('click', () => confirmarPagamento(presente));
+            pixInfoContainer.innerHTML = `
+                <h3>Obrigado pelo seu carinho! ❤️</h3>
+                <p>1. Escaneie o QR Code abaixo com o app do seu banco. O valor já está preenchido!</p>
+                <div class="pix-manual-info">
+                    <img src="${data.qrCodeImageUrl}" alt="QR Code Pix com valor" style="max-width: 250px; margin: 15px auto; display: block; border: 5px solid white; border-radius: 10px;">
+                    <strong>Ou use o Pix Copia e Cola:</strong>
+                    <input type="text" value="${data.qrCodeText}" readonly id="pix-copia-cola">
+                    <button id="btn-copiar">Copiar Código</button>
+                </div>
+                <div class="aviso-importante">
+                    <p>2. Após pagar, clique no botão abaixo para confirmar seu presente!</p>
+                    <button id="btn-confirmar-pagamento">Já fiz o Pix! Confirmar Presente</button>
+                </div>
+            `;
+            
+            document.getElementById('btn-copiar').addEventListener('click', () => {
+                const input = document.getElementById('pix-copia-cola');
+                input.select();
+                document.execCommand('copy');
+                alert('Código Pix copiado!');
+            });
+
+            document.getElementById('btn-confirmar-pagamento').addEventListener('click', () => confirmarPagamento(presente));
+        } catch (error) {
+            console.error("Erro ao abrir modal:", error);
+            pixInfoContainer.innerHTML = `<p style="color: red;">${error.message}</p>`;
+        }
     }
 
     async function confirmarPagamento(presente) {
@@ -147,14 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
         renderizarPresentes(presentesOrdenados);
     });
     
-    // === CÓDIGO PARA O EFEITO PARALLAX ===
     const imagemHero = document.querySelector('.hero-imagem');
     window.addEventListener('scroll', () => {
         const scrollPos = window.scrollY;
         if (imagemHero) {
-            // Move a imagem para baixo 30% da velocidade do scroll para criar o efeito de profundidade
             imagemHero.style.transform = `translateY(${scrollPos * 0.3}px)`;
         }
     });
-    // =========================================
 });

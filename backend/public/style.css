@@ -1,4 +1,4 @@
-/* Estilos Gerais Finais */
+/* Estilos Gerais Finais (Corrigido) */
 :root {
     --cor-principal-verde: #556B2F;
     --cor-acento-dourado: #B8860B;
@@ -75,18 +75,16 @@ h1, h2 {
 
 /* === NOVO ESTILO PARA O TÍTULO DA CONTAGEM === */
 .titulo-contagem {
-    font-size: 1rem !important; /* !important para sobrescrever a regra de cima */
+    font-size: 1rem !important;
     font-weight: bold;
     letter-spacing: 1.5px;
-    margin: 25px 0 5px 0; /* Espaçamento acima e abaixo */
+    margin: 25px 0 5px 0;
     opacity: 0.9;
 }
 /* ============================================ */
 
 #contagem-regressiva {
-    margin-top: 5px; /* Ajuste no espaçamento */
-    background-color: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 5px;
     border-radius: 10px;
     padding: 10px 25px;
     display: inline-block;

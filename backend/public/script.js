@@ -1,4 +1,4 @@
-// script.js (com Animação de Corações)
+// script.js (Versão Final Completa)
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = '/api';
     let todosOsPresentes = [];
@@ -9,8 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const pixInfoContainer = document.getElementById('pix-info');
     const seletorOrdenacao = document.getElementById('ordenar-presentes');
     const WHATSAPP_LINK_BASE = `https://wa.me/5583981367568?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20noivos%20Marianna%20e%20Renato!%20Segue%20o%20comprovante%20do:`;
-
-    // ... (as outras funções continuam as mesmas)
 
     function iniciarContagemRegressiva() {
         const dataCasamento = new Date('2025-11-21T17:00:00').getTime();
@@ -87,35 +85,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button id="btn-confirmar-pagamento">Já fiz o Pix! Confirmar Presente</button>
             </div>
         `;
-        document.getElementById('btn-copiar').addEventListener('click', () => {
+
+        const btnCopiar = document.getElementById('btn-copiar');
+        btnCopiar.addEventListener('click', () => {
             const input = document.getElementById('pix-copia-cola');
             input.select();
-            document.execCommand('copy');
-            alert('Código Pix copiado!');
+            input.setSelectionRange(0, 99999);
+            
+            navigator.clipboard.writeText(input.value).then(() => {
+                btnCopiar.textContent = 'Copiado! ✓';
+                btnCopiar.classList.add('copiado');
+                setTimeout(() => {
+                    btnCopiar.textContent = 'Copiar Código';
+                    btnCopiar.classList.remove('copiado');
+                }, 2000);
+            }).catch(err => {
+                document.execCommand('copy');
+                btnCopiar.textContent = 'Copiado! ✓';
+                btnCopiar.classList.add('copiado');
+                setTimeout(() => {
+                    btnCopiar.textContent = 'Copiar Código';
+                    btnCopiar.classList.remove('copiado');
+                }, 2000);
+            });
         });
+
         document.getElementById('btn-confirmar-pagamento').addEventListener('click', () => confirmarPagamento(presente));
     }
 
-    // NOVA FUNÇÃO PARA CRIAR A ANIMAÇÃO
     function criarAnimacaoCoracoes() {
         const container = document.createElement('div');
         container.className = 'hearts-container';
-        document.body.appendChild(container); // Adiciona ao body para ocupar o ecrã todo
-
-        for (let i = 0; i < 30; i++) { // Cria 30 corações
+        document.body.appendChild(container);
+        for (let i = 0; i < 30; i++) {
             const heart = document.createElement('div');
             heart.className = 'heart';
             heart.innerHTML = '❤️';
-            heart.style.left = `${Math.random() * 100}vw`; // Posição horizontal aleatória
-            heart.style.animationDuration = `${(Math.random() * 2) + 3}s`; // Duração aleatória (entre 3s e 5s)
-            heart.style.animationDelay = `${Math.random() * 2}s`; // Atraso aleatório para não começarem todos juntos
+            heart.style.left = `${Math.random() * 100}vw`;
+            heart.style.animationDuration = `${(Math.random() * 2) + 3}s`;
+            heart.style.animationDelay = `${Math.random() * 2}s`;
             container.appendChild(heart);
         }
-
-        // Remove o container da animação depois de um tempo para limpar o DOM
-        setTimeout(() => {
-            container.remove();
-        }, 6000);
+        setTimeout(() => { container.remove(); }, 6000);
     }
 
     async function confirmarPagamento(presente) {
@@ -125,12 +136,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${API_URL}/presentes/${presente.id}/confirmar`, { method: 'PATCH' });
             if (!response.ok) { throw new Error('Não foi possível confirmar.'); }
             
-            // ATIVA A ANIMAÇÃO E ATUALIZA A MENSAGEM
-            criarAnimacaoCoracoes(); // <<<<<<< CHAMA A NOVA FUNÇÃO AQUI
+            criarAnimacaoCoracoes();
             pixInfoContainer.innerHTML = `<div style="text-align: center; z-index: 10; position: relative;"><h2>Presente Confirmado! ✅</h2><p>Muito obrigado! ❤️</p><p>Você será redirecionado para o WhatsApp...</p></div>`;
             
             const linkWhats = `${WHATSAPP_LINK_BASE}%20*${presente.nome}*`;
-            setTimeout(() => { window.location.href = linkWhats; }, 4000); // Aumentei o tempo para dar para ver a animação
+            setTimeout(() => { window.location.href = linkWhats; }, 4000);
 
         } catch (error) {
             alert(error.message);

@@ -1,4 +1,4 @@
-/* Estilos Gerais Finais (com Animação de Corações) */
+/* Estilos Gerais Finais (Completo) */
 :root {
     --cor-principal-verde: #556B2F;
     --cor-acento-dourado: #B8860B;
@@ -213,7 +213,7 @@ h1, h2 {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden; /* Evitar scrollbars indesejadas */
+    overflow: hidden;
     background-color: rgba(0,0,0,0.6);
     animation: fadeIn 0.3s ease-in-out;
     align-items: center;
@@ -254,10 +254,12 @@ h1, h2 {
     padding: 15px;
     margin: 15px 0;
 }
+
 .pix-manual-info img {
     max-width: 200px !important;
     margin: 10px auto !important;
 }
+
 .pix-manual-info strong { display: block; margin-bottom: 5px; }
 .pix-manual-info input { font-weight: bold; width: 90%; text-align: center; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
 .pix-manual-info small { display: block; margin-top: 10px; color: #555; }
@@ -271,7 +273,6 @@ h1, h2 {
     font-size: 0.95rem;
     color: #8a6d3b;
 }
-.aviso-importante a { color: #8a6d3b; font-weight: bold; text-decoration: underline; }
 
 footer {
     text-align: center;
@@ -293,21 +294,20 @@ footer {
     to { opacity: 1; }
 }
 
-/* === ANIMAÇÃO DE CORAÇÕES === */
 .hearts-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Garante que não interfere com cliques */
+    pointer-events: none;
     overflow: hidden;
     z-index: 9999;
 }
 
 .heart {
     position: absolute;
-    bottom: -50px; /* Começa fora do ecrã */
+    bottom: -50px;
     font-size: 2rem;
     color: red;
     animation: floatHeart 4s linear forwards;
@@ -319,12 +319,15 @@ footer {
         opacity: 1;
     }
     100% {
-        transform: translateY(-150vh) rotate(720deg); /* Sobe muito para garantir que sai do ecrã */
+        transform: translateY(-150vh) rotate(720deg);
         opacity: 0;
     }
 }
-/* ============================= */
 
+.pix-manual-info button.copiado {
+    background-color: #2E8B57;
+    transition: background-color 0.3s;
+}
 
 @media (max-width: 600px) {
     .hero-texto h1 { font-size: 2.5rem; }

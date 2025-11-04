@@ -1,7 +1,7 @@
 // backend/server.js (com ordenação aleatória)
 require('dotenv').config();
 const express = require('express');
-const path = require('path');
+const path = path();
 const db = require('./db'); 
 
 const app = express();
@@ -10,19 +10,38 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota para buscar os presentes ATUALIZADA para ordem aleatória
+// Rota para buscar os presentes (AGORA FILTRADA PARA O SITE 'mariana')
 app.get('/api/presentes', async (req, res) => {
     try {
-        // A mágica acontece aqui: ORDER BY RANDOM()
-        const resultado = await db.query("SELECT * FROM presentes WHERE status = 'disponivel' ORDER BY RANDOM()");
+        const siteAtual = 'mariana'; // Define qual site esta rota deve buscar
+        const resultado = await db.query(
+            "SELECT * FROM presentes WHERE status = 'disponivel' AND site_id = $1 ORDER BY RANDOM()",
+            [siteAtual]
+        );
         res.status(200).json(resultado.rows);
     } catch (error) {
-        console.error("Erro ao buscar presentes:", error);
+        console.error("Erro ao buscar presentes (mariana):", error);
         res.status(500).json({ error: 'Ocorreu um erro no servidor.' });
     }
 });
 
-// Rota de confirmação
+// ############ NOVA ROTA PARA O SITE 'TRABALHO' ############
+app.get('/api/trabalho', async (req, res) => {
+    try {
+        const siteTrabalho = 'trabalho'; // Define qual site esta rota deve buscar
+        const resultado = await db.query(
+            "SELECT * FROM presentes WHERE status = 'disponivel' AND site_id = $1 ORDER BY RANDOM()",
+            [siteTrabalho]
+        );
+        res.status(200).json(resultado.rows);
+    } catch (error) {
+        console.error("Erro ao buscar itens (trabalho):", error);
+        res.status(500).json({ error: 'Ocorreu um erro no servidor.' });
+    }
+});
+
+
+// Rota de confirmação (funciona para ambos os sites)
 app.patch('/api/presentes/:id/confirmar', async (req, res) => {
     const { id } = req.params;
     try {

@@ -1,6 +1,7 @@
-// script.js (respeitando a ordem aleatória do servidor)
+// backend/public/script.js (VERSÃO FINAL DE DEPLOY)
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = '/api';
+    // A API_URL é relativa. Isto é IMPORTANTE para funcionar na Render.
+    const API_URL = '/api'; 
     let todosOsPresentes = [];
     const listaPresentesContainer = document.getElementById('lista-presentes');
     const presenteTemplate = document.getElementById('presente-template');
@@ -8,10 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.querySelector('.fechar-modal');
     const pixInfoContainer = document.getElementById('pix-info');
     const seletorOrdenacao = document.getElementById('ordenar-presentes');
-    const WHATSAPP_LINK_BASE = `https://wa.me/5583981367568?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20noivos%20Marianna%20e%20Renato!%20Segue%20o%20comprovante%20do:`;
+    const WHATSAPP_LINK_BASE = `https://wa.me/5583981367568?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20noivos%20Breno%20e%20Maria%20Luiza!%20Segue%20o%20comprovante%20do:`;
 
     function iniciarContagemRegressiva() {
-        const dataCasamento = new Date('2025-11-21T17:00:00').getTime();
+        const dataCasamento = new Date('2026-01-03T17:00:00').getTime();
         const elementoContagem = document.getElementById('contagem-regressiva');
         if (!elementoContagem) return;
         const atualizarContagem = () => {
@@ -35,14 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
     async function carregarPresentes() {
         listaPresentesContainer.innerHTML = '<h2>Carregando presentes...</h2>';
         try {
-            const response = await fetch(`${API_URL}/presentes`);
+            // ROTA CORRETA: Busca os presentes do 'trabalho' (Breno & Maria)
+            const response = await fetch(`${API_URL}/trabalho`); 
+            
             if (!response.ok) { throw new Error('Não foi possível carregar os presentes.'); }
             todosOsPresentes = await response.json();
-            // A linha que ordenava por ID foi REMOVIDA para manter a ordem aleatória do servidor
             renderizarPresentes(todosOsPresentes);
         } catch (error) {
             console.error("Erro:", error);
-            listaPresentesContainer.innerHTML = `<h2 style="color: red;">${error.message}</h2>`;
+            listaPresentesContainer.innerHTML = `<h2 style="color: red;">Não foi possível carregar os presentes.</h2>`;
         }
     }
 
@@ -135,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btn) { btn.disabled = true; btn.textContent = 'Confirmando...'; }
         
         try {
+            // Rota de confirmação (relativa)
             const response = await fetch(`${API_URL}/presentes/${presente.id}/confirmar`, { method: 'PATCH' });
             const data = await response.json();
 
@@ -179,13 +182,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const ordem = seletorOrdenacao.value;
         let presentesOrdenados = [...todosOsPresentes];
         
-        // A opção "Padrão" agora simplesmente usa a lista aleatória original
         if (ordem === 'menor-preco') { 
             presentesOrdenados.sort((a, b) => parseFloat(a.valor) - parseFloat(b.valor)); 
         } else if (ordem === 'maior-preco') { 
             presentesOrdenados.sort((a, b) => parseFloat(b.valor) - parseFloat(a.valor)); 
         }
-        // Se for "padrão", não faz nada, pois `presentesOrdenados` já é uma cópia da lista aleatória.
         
         renderizarPresentes(presentesOrdenados);
     });

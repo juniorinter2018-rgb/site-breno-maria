@@ -1,6 +1,6 @@
 /* Estilos Gerais Finais (com scroll inteligente no modal) */
 :root {
-    --cor-principal-verde: #556B2F;
+    --cor-principal-verde: #005A9C; /* <-- AQUI ESTÁ A MUDANÇA PRINCIPAL */
     --cor-acento-dourado: #B8860B;
     --cor-fundo-pagina: #f9f9f9;
     --cor-fundo-card: #FFFFFF;
@@ -184,12 +184,12 @@ h1, h2 {
 .presente-preco {
     font-size: 1.3rem;
     font-weight: bold;
-    color: var(--cor-principal-verde);
+    color: var(--cor-principal-verde); /* <-- USA A VARIÁVEL (agora azul) */
     margin: 10px 0;
 }
 
 .btn-presentear {
-    background-color: var(--cor-principal-verde);
+    background-color: var(--cor-principal-verde); /* <-- USA A VARIÁVEL (agora azul) */
     border: none;
     color: var(--cor-texto-claro);
     padding: 15px;
@@ -282,7 +282,7 @@ footer {
     text-align: center;
     padding: 2rem;
     margin-top: 3rem;
-    background-color: var(--cor-principal-verde);
+    background-color: var(--cor-principal-verde); /* <-- USA A VARIÁVEL (agora azul) */
     color: var(--cor-texto-claro);
     opacity: 0.9;
     text-transform: uppercase;
@@ -329,7 +329,7 @@ footer {
 }
 
 .pix-manual-info button.copiado {
-    background-color: #2E8B57;
+    background-color: #007BFF; /* <-- COR SECUNDÁRIA MUDADA (era verde) */
     transition: background-color 0.3s;
 }
 

@@ -1,14 +1,14 @@
-// backend/server.js (VERSÃO FINAL DE DEPLOY)
+// backend/server.js (VERSÃO FINAL DE DEPLOY - CORRIGIDA)
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const db = require('./db'); 
-const cors = require('cors'); // Necessário para testes locais
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors()); // Permite acesso de outras origens (como o 127.0.0.1)
+app.use(cors()); 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -79,6 +79,8 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+// ############ AQUI ESTÁ A CORREÇÃO ############
+// Adicionamos '0.0.0.0' para que a Render consiga se conectar
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Servidor rodando na porta ${port} e host 0.0.0.0`);
 });

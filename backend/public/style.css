@@ -1,10 +1,10 @@
-/* Estilos Gerais Finais (com scroll inteligente no modal) */
+/* Estilos Gerais (com todas as melhorias) */
 :root {
-    --cor-principal-verde: #005A9C; /* <-- AQUI ESTÁ A MUDANÇA PRINCIPAL */
+    --cor-principal-verde: #005A9C; /* Azul do Breno & Maria */
     --cor-acento-dourado: #B8860B;
     --cor-fundo-pagina: #f9f9f9;
     --cor-fundo-card: #FFFFFF;
-    --cor-texto: #333333;
+    --cor-texto: #2a3b4f; /* 1.1: Texto agora é azul-marinho */
     --cor-texto-claro: #FFFFFF;
     --sombra-card: 0 4px 8px rgba(0,0,0,0.08);
 }
@@ -51,12 +51,14 @@ h1, h2 {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
+    /* 1.3: Sobreposição trocada por gradiente azul */
+    background: linear-gradient(to top, rgba(0, 90, 156, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
     z-index: -1;
 }
 
 .hero-texto {
     text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    text-align: center; /* Alinhamento corrigido */
 }
 
 .hero-texto h1 {
@@ -137,7 +139,30 @@ h1, h2 {
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     opacity: 0;
     animation: floatUp 0.6s ease-out forwards;
+    position: relative; /* 2.2: Posição relativa para o selo */
 }
+
+/* 2.2: Estilo do card esgotado */
+.presente-card.esgotado {
+    opacity: 0.6;
+    pointer-events: none; /* Desabilita cliques */
+}
+
+/* 2.2: Estilo do selo "Presenteado!" */
+.presente-esgotado-selo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--cor-acento-dourado);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    z-index: 5;
+    text-transform: uppercase;
+}
+
 
 .presente-card:nth-child(1) { animation-delay: 0.1s; }
 .presente-card:nth-child(2) { animation-delay: 0.2s; }
@@ -181,28 +206,59 @@ h1, h2 {
     margin: 5px 0;
 }
 
+/* 2.1: Estilos da Barra de Progresso */
+.progress-bar-container {
+    background-color: #eee;
+    border-radius: 4px;
+    height: 8px;
+    margin: 10px 0 5px 0;
+    overflow: hidden;
+    width: 100%;
+}
+.progress-bar-fill {
+    height: 100%;
+    background-color: var(--cor-principal-verde); /* Azul */
+    transition: width 0.5s ease;
+    border-radius: 4px;
+}
+.presente-cotas span {
+    font-size: 0.8rem;
+}
+/* Fim da barra de progresso */
+
 .presente-preco {
     font-size: 1.3rem;
     font-weight: bold;
-    color: var(--cor-principal-verde); /* <-- USA A VARIÁVEL (agora azul) */
+    color: var(--cor-principal-verde); 
     margin: 10px 0;
 }
 
+/* 1.2: Botão "Fantasma" */
 .btn-presentear {
-    background-color: var(--cor-principal-verde); /* <-- USA A VARIÁVEL (agora azul) */
-    border: none;
-    color: var(--cor-texto-claro);
+    background-color: transparent;
+    border: 2px solid var(--cor-principal-verde);
+    color: var(--cor-principal-verde);
     padding: 15px;
     font-size: 1rem;
     font-family: 'Raleway', sans-serif;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, color 0.2s;
     margin-top: auto;
+    text-transform: uppercase;
 }
 
 .btn-presentear:hover {
-    background-color: var(--cor-acento-dourado);
+    background-color: var(--cor-principal-verde);
+    color: var(--cor-texto-claro);
+}
+
+/* 1.2: Estilo do botão desabilitado (para o selo) */
+.btn-presentear:disabled {
+    background-color: #f1f1f1;
+    border-color: #ddd;
+    color: #aaa;
+    cursor: not-allowed;
 }
 
 .modal {
@@ -234,10 +290,8 @@ h1, h2 {
     text-align: center;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
-
-    /* <<<<<<<<<<<<<<<<<<<< CORREÇÃO APLICADA AQUI <<<<<<<<<<<<<<<<<<<< */
-    max-height: 90vh; /* Define uma altura máxima (90% da altura da janela) */
-    overflow-y: auto;  /* Mostra a barra de scroll vertical APENAS se o conteúdo for maior */
+    max-height: 90vh; 
+    overflow-y: auto;  
 }
 
 .fechar-modal {
@@ -269,20 +323,21 @@ h1, h2 {
 .pix-manual-info small { display: block; margin-top: 10px; color: #555; }
 .pix-manual-info button { background-color: var(--cor-principal-verde); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; }
 
+/* 1.4: Modal do PIX atualizado para azul */
 .aviso-importante {
-    background-color: #fffbe6;
-    border: 1px solid #ffe58f;
+    background-color: #e6f0f8; /* Tom de azul claro */
+    border: 1px solid #b3d1ea; /* Borda azul clara */
     border-radius: 8px;
     padding: 15px;
     font-size: 0.95rem;
-    color: #8a6d3b;
+    color: var(--cor-texto); /* Texto azul-marinho */
 }
 
 footer {
     text-align: center;
     padding: 2rem;
     margin-top: 3rem;
-    background-color: var(--cor-principal-verde); /* <-- USA A VARIÁVEL (agora azul) */
+    background-color: var(--cor-principal-verde); 
     color: var(--cor-texto-claro);
     opacity: 0.9;
     text-transform: uppercase;
@@ -329,7 +384,7 @@ footer {
 }
 
 .pix-manual-info button.copiado {
-    background-color: #007BFF; /* <-- COR SECUNDÁRIA MUDADA (era verde) */
+    background-color: #007BFF; 
     transition: background-color 0.3s;
 }
 

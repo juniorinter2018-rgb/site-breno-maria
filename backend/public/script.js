@@ -1,6 +1,5 @@
-// backend/public/script.js (VERSÃO FINAL DE DEPLOY)
+// script.js (VERSÃO FINAL - com barra de progresso e lógica de "esgotado")
 document.addEventListener('DOMContentLoaded', () => {
-    // A API_URL é relativa. Isto é IMPORTANTE para funcionar na Render.
     const API_URL = '/api'; 
     let todosOsPresentes = [];
     const listaPresentesContainer = document.getElementById('lista-presentes');
@@ -36,11 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
     async function carregarPresentes() {
         listaPresentesContainer.innerHTML = '<h2>Carregando presentes...</h2>';
         try {
-            // ROTA CORRETA: Busca os presentes do 'trabalho' (Breno & Maria)
             const response = await fetch(`${API_URL}/trabalho`); 
-            
             if (!response.ok) { throw new Error('Não foi possível carregar os presentes.'); }
+            
             todosOsPresentes = await response.json();
+            
+            // 3.0: Adiciona a propriedade 'esgotado' localmente
+            // Se o item veio do BD com cotas_disponiveis 0, já marca como esgotado
+            todosOsPresentes.forEach(p => {
+                if (p.cotas_disponiveis === 0) {
+                    p.esgotado = true;
+                }
+            });
+
             renderizarPresentes(todosOsPresentes);
         } catch (error) {
             console.error("Erro:", error);
@@ -51,19 +58,57 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarPresentes(lista) {
         listaPresentesContainer.innerHTML = '';
         if (lista.length === 0) { listaPresentesContainer.innerHTML = '<h2>Nenhum presente disponível.</h2>'; return; }
-        lista.forEach(p => { const card = criarCardDePresente(p); listaPresentesContainer.appendChild(card); });
+        
+        // 3.0: A lista agora renderiza todos, mas os esgotados aparecerão diferentes
+        lista.forEach(p => { 
+            const card = criarCardDePresente(p); 
+            listaPresentesContainer.appendChild(card); 
+        });
     }
 
     function criarCardDePresente(presente) {
         const cardClone = presenteTemplate.content.cloneNode(true);
         const cardElement = cardClone.firstElementChild;
+
+        // 2.2: Adiciona selo e classe "esgotado"
+        if (presente.esgotado) {
+            cardElement.classList.add('esgotado');
+            const selo = document.createElement('div');
+            selo.className = 'presente-esgotado-selo';
+            selo.textContent = 'Presenteado!';
+            cardElement.appendChild(selo);
+        }
+
         cardElement.querySelector('.presente-img').src = presente.imagem_url;
         cardElement.querySelector('.presente-nome').textContent = presente.nome;
         const precoF = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(presente.valor);
         cardElement.querySelector('.presente-preco').textContent = precoF;
+        
         const cotasEl = cardElement.querySelector('.presente-cotas');
-        if (presente.cotas_total > 1) { cotasEl.textContent = `Disponível ${presente.cotas_disponiveis} de ${presente.cotas_total} cotas`; } else { cotasEl.style.display = 'none'; }
-        cardElement.querySelector('.btn-presentear').addEventListener('click', () => abrirModalPix(presente));
+        
+        // 2.1: Implementa a Barra de Progresso
+        if (presente.cotas_total > 1) {
+            const perc = (presente.cotas_disponiveis / presente.cotas_total) * 100;
+            cotasEl.innerHTML = `
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" style="width: ${perc}%;"></div>
+                </div>
+                <span>Disponível ${presente.cotas_disponiveis} de ${presente.cotas_total} cotas</span>
+            `;
+        } else {
+            cotasEl.style.display = 'none';
+        }
+        
+        const btn = cardElement.querySelector('.btn-presentear');
+        
+        // 2.2: Desabilita o botão se estiver esgotado
+        if (presente.esgotado) {
+            btn.disabled = true;
+            btn.textContent = 'Presenteado!';
+        } else {
+            btn.addEventListener('click', () => abrirModalPix(presente));
+        }
+
         return cardElement;
     }
 
@@ -137,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btn) { btn.disabled = true; btn.textContent = 'Confirmando...'; }
         
         try {
-            // Rota de confirmação (relativa)
             const response = await fetch(`${API_URL}/presentes/${presente.id}/confirmar`, { method: 'PATCH' });
             const data = await response.json();
 
@@ -148,14 +192,20 @@ document.addEventListener('DOMContentLoaded', () => {
             criarAnimacaoCoracoes();
             pixInfoContainer.innerHTML = `<div style="text-align: center; z-index: 10; position: relative;"><h2>Presente Confirmado! ✅</h2><p>Muito obrigado! ❤️</p><p>A redirecionar para o WhatsApp...</p></div>`;
             
+            // 3.0: Lógica de atualização (NÃO REMOVE MAIS)
             const presenteIndex = todosOsPresentes.findIndex(p => p.id === presente.id);
             if (presenteIndex !== -1) {
                 if (data.presente.status === 'pago') {
-                    todosOsPresentes.splice(presenteIndex, 1);
+                    // Item (ou última cota) foi comprado
+                    todosOsPresentes[presenteIndex].esgotado = true; 
+                    todosOsPresentes[presenteIndex].cotas_disponiveis = 0;
                 } else {
-                    todosOsPresentes[presenteIndex] = data.presente;
+                    // Cota foi comprada, mas ainda restam
+                    todosOsPresentes[presenteIndex].cotas_disponiveis = data.presente.cotas_disponiveis;
                 }
             }
+            
+            // Re-renderiza a lista para mostrar o item esgotado/atualizado
             renderizarPresentes(todosOsPresentes);
 
             const linkWhats = `${WHATSAPP_LINK_BASE}%20*${presente.nome}*`;

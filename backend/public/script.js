@@ -1,4 +1,4 @@
-// script.js (VERSÃO FINAL - com barra de progresso, lógica "esgotado" e links NUBANK)
+// script.js (com ordenação padrão MAIOR > MENOR)
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = '/api'; 
     let todosOsPresentes = [];
@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal-pix');
     const closeModalBtn = document.querySelector('.fechar-modal');
     const pixInfoContainer = document.getElementById('pix-info');
-    const seletorOrdenacao = document.getElementById('ordenar-presentes');
     
-    // ATUALIZADO: Novo número para comprovante 
+    // REMOVIDA: A linha "const seletorOrdenacao = ..."
+
     const WHATSAPP_LINK_BASE = `https://wa.me/5583981604700?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20noivos%20Breno%20e%20Maria%20Luiza!%20Segue%20o%20comprovante%20do:`;
 
     function iniciarContagemRegressiva() {
@@ -47,6 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     p.esgotado = true;
                 }
             });
+
+            // ############ ORDENAÇÃO PADRÃO APLICADA AQUI ############
+            // Ordena do Maior Preço para o Menor Preço
+            todosOsPresentes.sort((a, b) => parseFloat(b.valor) - parseFloat(a.valor));
 
             renderizarPresentes(todosOsPresentes);
         } catch (error) {
@@ -108,17 +112,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return cardElement;
     }
 
-    // ############ FUNÇÃO DO MODAL ATUALIZADA (MUITO IMPORTANTE) ############
     function abrirModalPix(presente) {
         modal.style.display = 'flex';
         
-        // Verifica se é um link (Nubank) ou um PIX Copia e Cola
         const ehLinkDePagamento = presente.pix_copia_e_cola.startsWith('http');
 
         let conteudoModal = '';
 
         if (ehLinkDePagamento) {
-            // É um link Nubank 
             conteudoModal = `
                 <h3>Obrigado pelo seu carinho! ❤️</h3>
                 <p>1. Clique no botão abaixo para pagar com PIX (Nubank).</p>
@@ -133,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             
-            // Adiciona um estilo rápido para o botão do Nubank
             const style = document.createElement('style');
             style.innerHTML = `
                 .btn-pagar-nubank {
@@ -150,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.head.appendChild(style);
 
         } else {
-            // É um PIX Copia e Cola (padrão do site da Mariana)
             const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(presente.pix_copia_e_cola)}`;
             conteudoModal = `
                 <h3>Obrigado pelo seu carinho! ❤️</h3>
@@ -170,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pixInfoContainer.innerHTML = conteudoModal;
 
-        // Adiciona o listener para o botão de copiar (se ele existir)
         const btnCopiar = document.getElementById('btn-copiar');
         if (btnCopiar) {
             btnCopiar.addEventListener('click', () => {
@@ -196,12 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Adiciona o listener para o botão de confirmar (sempre existe)
         document.getElementById('btn-confirmar-pagamento').addEventListener('click', () => confirmarPagamento(presente));
     }
     
     function criarAnimacaoCoracoes() {
-        // ... (código da animação permanece o mesmo) ...
         const container = document.createElement('div');
         container.className = 'hearts-container';
         document.body.appendChild(container);
@@ -264,18 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModalBtn.addEventListener('click', fecharModal);
     window.addEventListener('click', (event) => { if (event.target == modal) { fecharModal(); } });
     
-    seletorOrdenacao.addEventListener('change', () => {
-        const ordem = seletorOrdenacao.value;
-        let presentesOrdenados = [...todosOsPresentes];
-        
-        if (ordem === 'menor-preco') { 
-            presentesOrdenados.sort((a, b) => parseFloat(a.valor) - parseFloat(b.valor)); 
-        } else if (ordem === 'maior-preco') { 
-            presentesOrdenados.sort((a, b) => parseFloat(b.valor) - parseFloat(a.valor)); 
-        }
-        
-        renderizarPresentes(presentesOrdenados);
-    });
+    // REMOVIDA: A função "seletorOrdenacao.addEventListener('change', ...)"
 
     const imagemHero = document.querySelector('.hero-imagem');
     window.addEventListener('scroll', () => {

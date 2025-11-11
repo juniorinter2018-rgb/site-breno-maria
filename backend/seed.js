@@ -1,13 +1,12 @@
 const db = require('./db');
 
-// Lista MESTRA de presentes v5
-// Contém os 24 presentes de Mariana (Opção 1 + Regra da Cota Única)
-// Contém os 3 presentes de Breno (com PIX correto)
+// Lista MESTRA de presentes v6
+// Corrigido o nome do ID 38 e reabastecido o ID 36.
 const DADOS_DOS_PRESENTES = [
     // ########## PRESENTES DE MARIANA & RENATO (site_id: 'mariana') - 24 ITENS ##########
     
     // Itens de 1 cota (sempre disponíveis)
-    { "id": 11, "nome": "Só para não dizer que eu não dei nada (80)", "valor": 80.00, "imagem_url": "images/moeda-nao-dei-nada-80.jpg", "cotas_total": 1, "cotas_disponiveis": 1, "status": "disponivel", "pix_copia_e_cola": "00020126500014BR.GOV.BCB.PIX0128mariannavidal12345@gmail.com520400005303986540580.005802BR5923Marianna Vidal da Silva6009SAO PAULO62140510Uog7w1SbFq63044416", "site_id": "mariana" },
+    { "id": 11, "nome": "Só para não dizer que eu não dei nada", "valor": 80.00, "imagem_url": "images/moeda-nao-dei-nada-80.jpg", "cotas_total": 1, "cotas_disponiveis": 1, "status": "disponivel", "pix_copia_e_cola": "00020126500014BR.GOV.BCB.PIX0128mariannavidal12345@gmail.com520400005303986540580.005802BR5923Marianna Vidal da Silva6009SAO PAULO62140510Uog7w1SbFq63044416", "site_id": "mariana" },
     { "id": 12, "nome": "Chá da tarde no hotel", "valor": 80.00, "imagem_url": "images/cha-hotel.jpg", "cotas_total": 1, "cotas_disponiveis": 1, "status": "disponivel", "pix_copia_e_cola": "00020126500014BR.GOV.BCB.PIX0128mariannavidal12345@gmail.com520400005303986540580.005802BR5923Marianna Vidal da Silva6009SAO PAULO62140510Uog7w1SbFq63044416", "site_id": "mariana" },
     { "id": 13, "nome": "Pijama para os noivos usarem na lua de mel", "valor": 80.00, "imagem_url": "images/pijama-shrek.jpg", "cotas_total": 1, "cotas_disponiveis": 1, "status": "disponivel", "pix_copia_e_cola": "00020126500014BR.GOV.BCB.PIX0128mariannavidal12345@gmail.com520400005303986540580.005802BR5923Marianna Vidal da Silva6009SAO PAULO62140510Uog7w1SbFq63044416", "site_id": "mariana" },
     { "id": 14, "nome": "Garantindo o topete do noivo", "valor": 80.00, "imagem_url": "images/topete-noivo.jpg", "cotas_total": 1, "cotas_disponiveis": 1, "status": "disponivel", "pix_copia_e_cola": "00020126500014BR.GOV.BCB.PIX0128mariannavidal12345@gmail.com520400005303986540580.005802BR5923Marianna Vidal da Silva6009SAO PAULO62140510Uog7w1SbFq63044416", "site_id": "mariana" },
@@ -42,14 +41,14 @@ const DADOS_DOS_PRESENTES = [
         "valor": 100.00, 
         "imagem_url": "images/operacao-lua-de-mel.jpg", 
         "cotas_total": 42, 
-        "cotas_disponiveis": 41,
+        "cotas_disponiveis": 42, // <-- CORRIGIDO
         "status": "disponivel",
         "pix_copia_e_cola": "00020126580014BR.GOV.BCB.PIX01363f162663-612b-41af-b790-13d7cfca86435204000053039865406100.005802BR5922Breno Alves de Lacerda6009SAO PAULO62140510GOa5Xf2Cdc6304CB04",
         "site_id": "trabalho"
     },
     { 
         "id": 37, 
-        "nome": "Projeto Lar Doce Lar", 
+        "nome": "Projeto Casa Nova", 
         "valor": 200.00, 
         "imagem_url": "images/lar-doce-lar.jpg", 
         "cotas_total": 42, 
@@ -60,13 +59,13 @@ const DADOS_DOS_PRESENTES = [
     },
     { 
         "id": 38, 
-        "nome": "Ajude os noivos eletrodomesticos para casa nova", 
+        "nome": "Ajude os noivos a comprar eletrodomesticos para casa nova", // <-- CORRIGIDO
         "valor": 300.00, 
         "imagem_url": "images/primeiros-socorros.jpg", 
         "cotas_total": 21, 
         "cotas_disponiveis": 21,
         "status": "disponivel",
-        "pix_copia_e_cola": "00020126580014BR.GOV.BCB.PIX01363f162663-612b-41af-b790-1DELETED-bf71ab7c3cdb",
+        "pix_copia_e_cola": "00020126580014BR.GOV.BCB.PIX01363f162663-612b-41af-b790-13d7cfca86435204000053039865406300.005802BR5922Breno Alves de Lacerda6009SAO PAULO621405107yL2RixxFv6304A59F",
         "site_id": "trabalho"
     }
 ];

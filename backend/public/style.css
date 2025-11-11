@@ -1,6 +1,6 @@
-/* Estilos Gerais (sem "Ordenar por") */
+/* Estilos Gerais (com coração azul) */
 :root {
-    --cor-principal-verde: #005A9C; /* Azul do Breno & Maria */
+    --cor-principal-verde: #005A9C; 
     --cor-acento-dourado: #B8860B;
     --cor-fundo-pagina: #f9f9f9;
     --cor-fundo-card: #FFFFFF;
@@ -94,15 +94,13 @@ h1, h2 {
     letter-spacing: 2px;
 }
 
-/* OS ESTILOS DO FILTRO FORAM REMOVIDOS DAQUI */
-
 .container-presentes {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
     padding: 20px;
     max-width: 1200px;
-    margin: 20px auto 0 auto; /* Adicionada margem no topo */
+    margin: 20px auto 0 auto; 
 }
 
 .presente-card {
@@ -340,7 +338,7 @@ footer {
     position: absolute;
     bottom: -50px;
     font-size: 2rem;
-    color: red;
+    color: var(--cor-principal-verde); /* <-- MUDANÇA AQUI (para azul) */
     animation: floatHeart 4s linear forwards;
 }
 

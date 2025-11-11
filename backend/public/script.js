@@ -1,4 +1,4 @@
-// script.js (com ordenação padrão MAIOR > MENOR)
+// script.js (com corações azuis 💙)
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = '/api'; 
     let todosOsPresentes = [];
@@ -8,8 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.querySelector('.fechar-modal');
     const pixInfoContainer = document.getElementById('pix-info');
     
-    // REMOVIDA: A linha "const seletorOrdenacao = ..."
-
     const WHATSAPP_LINK_BASE = `https://wa.me/5583981604700?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20noivos%20Breno%20e%20Maria%20Luiza!%20Segue%20o%20comprovante%20do:`;
 
     function iniciarContagemRegressiva() {
@@ -48,8 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // ############ ORDENAÇÃO PADRÃO APLICADA AQUI ############
-            // Ordena do Maior Preço para o Menor Preço
             todosOsPresentes.sort((a, b) => parseFloat(b.valor) - parseFloat(a.valor));
 
             renderizarPresentes(todosOsPresentes);
@@ -204,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < 30; i++) {
             const heart = document.createElement('div');
             heart.className = 'heart';
-            heart.innerHTML = '❤️';
+            heart.innerHTML = '💙'; // <-- MUDANÇA AQUI (coração azul)
             heart.style.left = `${Math.random() * 100}vw`;
             heart.style.animationDuration = `${(Math.random() * 2) + 3}s`;
             heart.style.animationDelay = `${Math.random() * 2}s`;
@@ -260,8 +256,6 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModalBtn.addEventListener('click', fecharModal);
     window.addEventListener('click', (event) => { if (event.target == modal) { fecharModal(); } });
     
-    // REMOVIDA: A função "seletorOrdenacao.addEventListener('change', ...)"
-
     const imagemHero = document.querySelector('.hero-imagem');
     window.addEventListener('scroll', () => {
         const scrollPos = window.scrollY;

@@ -1,4 +1,4 @@
-/* Estilos Gerais (com todas as melhorias) */
+/* Estilos Gerais (com fonte Playfair + Lato e botão azul) */
 :root {
     --cor-principal-verde: #005A9C; /* Azul do Breno & Maria */
     --cor-acento-dourado: #B8860B;
@@ -10,7 +10,8 @@
 }
 
 body {
-    font-family: 'Raleway', sans-serif;
+    /* ############ FONTE DO CORPO (LATO) ############ */
+    font-family: 'Lato', sans-serif;
     margin: 0;
     padding: 0;
     background-color: var(--cor-fundo-pagina);
@@ -18,7 +19,8 @@ body {
 }
 
 h1, h2 {
-    font-family: 'Cormorant Garamond', serif;
+    /* ############ FONTE DOS TÍTULOS (PLAYFAIR DISPLAY) ############ */
+    font-family: 'Playfair Display', serif;
     font-weight: 700;
 }
 
@@ -72,6 +74,7 @@ h1, h2 {
     font-size: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-family: 'Lato', sans-serif; /* Garante que o subtítulo use Lato */
 }
 
 .titulo-contagem {
@@ -80,6 +83,7 @@ h1, h2 {
     letter-spacing: 1.5px;
     margin: 25px 0 5px 0;
     opacity: 0.9;
+    font-family: 'Lato', sans-serif; /* Garante que "Nossa Data" use Lato */
 }
 
 #contagem-regressiva {
@@ -88,7 +92,7 @@ h1, h2 {
     padding: 10px 25px;
     display: inline-block;
     font-size: 1.6rem;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Lato', sans-serif; /* Garante que a contagem use Lato */
     font-weight: 500;
     letter-spacing: 2px;
 }
@@ -114,7 +118,7 @@ h1, h2 {
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #fff;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Lato', sans-serif;
     font-size: 1rem;
     cursor: pointer;
 }
@@ -193,7 +197,7 @@ h1, h2 {
 }
 
 .presente-nome {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-weight: 700;
     font-size: 1.4rem;
     margin: 0 0 5px 0;
@@ -233,24 +237,23 @@ h1, h2 {
     margin: 10px 0;
 }
 
-/* 1.2: Botão "Fantasma" */
+/* ############ BOTÃO VOLTOU A SER SÓLIDO ############ */
 .btn-presentear {
-    background-color: transparent;
-    border: 2px solid var(--cor-principal-verde);
-    color: var(--cor-principal-verde);
+    background-color: var(--cor-principal-verde); /* <-- Fundo azul sólido */
+    border: none;
+    color: var(--cor-texto-claro); /* <-- Texto branco */
     padding: 15px;
     font-size: 1rem;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Lato', sans-serif; /* Garante que o botão use Lato */
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.2s;
     margin-top: auto;
     text-transform: uppercase;
 }
 
 .btn-presentear:hover {
-    background-color: var(--cor-principal-verde);
-    color: var(--cor-texto-claro);
+    background-color: var(--cor-acento-dourado); /* <-- Hover dourado */
 }
 
 /* 1.2: Estilo do botão desabilitado (para o selo) */
@@ -260,6 +263,8 @@ h1, h2 {
     color: #aaa;
     cursor: not-allowed;
 }
+/* ############ FIM DA MUDANÇA DO BOTÃO ############ */
+
 
 .modal {
     display: none;

@@ -1,4 +1,4 @@
-// script.js (VERSÃO FINAL - com barra de progresso e lógica de "esgotado")
+// script.js (VERSÃO FINAL - com barra de progresso, lógica "esgotado" e links NUBANK)
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = '/api'; 
     let todosOsPresentes = [];
@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.querySelector('.fechar-modal');
     const pixInfoContainer = document.getElementById('pix-info');
     const seletorOrdenacao = document.getElementById('ordenar-presentes');
-    const WHATSAPP_LINK_BASE = `https://wa.me/5583981367568?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20noivos%20Breno%20e%20Maria%20Luiza!%20Segue%20o%20comprovante%20do:`;
+    
+    // ATUALIZADO: Novo número para comprovante 
+    const WHATSAPP_LINK_BASE = `https://wa.me/5583981604700?text=Oi!%20Acabei%20de%20dar%20um%20presente%20para%20os%20noivos%20Breno%20e%20Maria%20Luiza!%20Segue%20o%20comprovante%20do:`;
 
     function iniciarContagemRegressiva() {
         const dataCasamento = new Date('2026-01-03T17:00:00').getTime();
@@ -40,8 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             todosOsPresentes = await response.json();
             
-            // 3.0: Adiciona a propriedade 'esgotado' localmente
-            // Se o item veio do BD com cotas_disponiveis 0, já marca como esgotado
             todosOsPresentes.forEach(p => {
                 if (p.cotas_disponiveis === 0) {
                     p.esgotado = true;
@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         listaPresentesContainer.innerHTML = '';
         if (lista.length === 0) { listaPresentesContainer.innerHTML = '<h2>Nenhum presente disponível.</h2>'; return; }
         
-        // 3.0: A lista agora renderiza todos, mas os esgotados aparecerão diferentes
         lista.forEach(p => { 
             const card = criarCardDePresente(p); 
             listaPresentesContainer.appendChild(card); 
@@ -70,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardClone = presenteTemplate.content.cloneNode(true);
         const cardElement = cardClone.firstElementChild;
 
-        // 2.2: Adiciona selo e classe "esgotado"
         if (presente.esgotado) {
             cardElement.classList.add('esgotado');
             const selo = document.createElement('div');
@@ -86,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const cotasEl = cardElement.querySelector('.presente-cotas');
         
-        // 2.1: Implementa a Barra de Progresso
         if (presente.cotas_total > 1) {
             const perc = (presente.cotas_disponiveis / presente.cotas_total) * 100;
             cotasEl.innerHTML = `
@@ -101,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const btn = cardElement.querySelector('.btn-presentear');
         
-        // 2.2: Desabilita o botão se estiver esgotado
         if (presente.esgotado) {
             btn.disabled = true;
             btn.textContent = 'Presenteado!';
@@ -112,56 +108,100 @@ document.addEventListener('DOMContentLoaded', () => {
         return cardElement;
     }
 
+    // ############ FUNÇÃO DO MODAL ATUALIZADA (MUITO IMPORTANTE) ############
     function abrirModalPix(presente) {
         modal.style.display = 'flex';
-        if (!presente.pix_copia_e_cola) {
-            pixInfoContainer.innerHTML = `<p style="color: red;">Pix indisponível. Por favor, escolha outro presente.</p>`;
-            return;
-        }
-        const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(presente.pix_copia_e_cola)}`;
         
-        pixInfoContainer.innerHTML = `
-            <h3>Obrigado pelo seu carinho! ❤️</h3>
-            <p>1. Escaneie o QR Code abaixo com o seu banco.</p>
-            <div class="pix-manual-info">
-                <img src="${qrCodeImageUrl}" alt="QR Code Pix">
-                <strong>Ou use o Pix Copia e Cola:</strong>
-                <input type="text" value="${presente.pix_copia_e_cola}" readonly id="pix-copia-cola">
-                <button id="btn-copiar">Copiar Código</button>
-            </div>
-            <div class="aviso-importante">
-                <p>2. Após pagar, confirme o presente abaixo!</p>
-                <button id="btn-confirmar-pagamento">Já paguei! Confirmar</button>
-            </div>
-        `;
+        // Verifica se é um link (Nubank) ou um PIX Copia e Cola
+        const ehLinkDePagamento = presente.pix_copia_e_cola.startsWith('http');
 
+        let conteudoModal = '';
+
+        if (ehLinkDePagamento) {
+            // É um link Nubank 
+            conteudoModal = `
+                <h3>Obrigado pelo seu carinho! ❤️</h3>
+                <p>1. Clique no botão abaixo para pagar com PIX (Nubank).</p>
+                <div class="pix-manual-info">
+                    <a href="${presente.pix_copia_e_cola}" target="_blank" class="btn-pagar-nubank">
+                        Pagar R$ ${presente.valor.toFixed(2)} com PIX
+                    </a>
+                </div>
+                <div class="aviso-importante">
+                    <p>2. Após pagar, clique em "Confirmar" aqui embaixo!</p>
+                    <button id="btn-confirmar-pagamento">Já paguei! Confirmar</button>
+                </div>
+            `;
+            
+            // Adiciona um estilo rápido para o botão do Nubank
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .btn-pagar-nubank {
+                    display: inline-block;
+                    background-color: #820AD1;
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    font-weight: bold;
+                    font-family: 'Raleway', sans-serif;
+                }
+            `;
+            document.head.appendChild(style);
+
+        } else {
+            // É um PIX Copia e Cola (padrão do site da Mariana)
+            const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(presente.pix_copia_e_cola)}`;
+            conteudoModal = `
+                <h3>Obrigado pelo seu carinho! ❤️</h3>
+                <p>1. Escaneie o QR Code abaixo com o seu banco.</p>
+                <div class="pix-manual-info">
+                    <img src="${qrCodeImageUrl}" alt="QR Code Pix">
+                    <strong>Ou use o Pix Copia e Cola:</strong>
+                    <input type="text" value="${presente.pix_copia_e_cola}" readonly id="pix-copia-cola">
+                    <button id="btn-copiar">Copiar Código</button>
+                </div>
+                <div class="aviso-importante">
+                    <p>2. Após pagar, confirme o presente abaixo!</p>
+                    <button id="btn-confirmar-pagamento">Já paguei! Confirmar</button>
+                </div>
+            `;
+        }
+
+        pixInfoContainer.innerHTML = conteudoModal;
+
+        // Adiciona o listener para o botão de copiar (se ele existir)
         const btnCopiar = document.getElementById('btn-copiar');
-        btnCopiar.addEventListener('click', () => {
-            const input = document.getElementById('pix-copia-cola');
-            input.select();
-            input.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(input.value).then(() => {
-                btnCopiar.textContent = 'Copiado! ✓';
-                btnCopiar.classList.add('copiado');
-                setTimeout(() => {
-                    btnCopiar.textContent = 'Copiar Código';
-                    btnCopiar.classList.remove('copiado');
-                }, 2000);
-            }).catch(err => {
-                document.execCommand('copy');
-                btnCopiar.textContent = 'Copiado! ✓';
-                btnCopiar.classList.add('copiado');
-                setTimeout(() => {
-                    btnCopiar.textContent = 'Copiar Código';
-                    btnCopiar.classList.remove('copiado');
-                }, 2000);
+        if (btnCopiar) {
+            btnCopiar.addEventListener('click', () => {
+                const input = document.getElementById('pix-copia-cola');
+                input.select();
+                input.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(input.value).then(() => {
+                    btnCopiar.textContent = 'Copiado! ✓';
+                    btnCopiar.classList.add('copiado');
+                    setTimeout(() => {
+                        btnCopiar.textContent = 'Copiar Código';
+                        btnCopiar.classList.remove('copiado');
+                    }, 2000);
+                }).catch(err => {
+                    document.execCommand('copy');
+                    btnCopiar.textContent = 'Copiado! ✓';
+                    btnCopiar.classList.add('copiado');
+                    setTimeout(() => {
+                        btnCopiar.textContent = 'Copiar Código';
+                        btnCopiar.classList.remove('copiado');
+                    }, 2000);
+                });
             });
-        });
+        }
 
+        // Adiciona o listener para o botão de confirmar (sempre existe)
         document.getElementById('btn-confirmar-pagamento').addEventListener('click', () => confirmarPagamento(presente));
     }
     
     function criarAnimacaoCoracoes() {
+        // ... (código da animação permanece o mesmo) ...
         const container = document.createElement('div');
         container.className = 'hearts-container';
         document.body.appendChild(container);
@@ -192,20 +232,16 @@ document.addEventListener('DOMContentLoaded', () => {
             criarAnimacaoCoracoes();
             pixInfoContainer.innerHTML = `<div style="text-align: center; z-index: 10; position: relative;"><h2>Presente Confirmado! ✅</h2><p>Muito obrigado! ❤️</p><p>A redirecionar para o WhatsApp...</p></div>`;
             
-            // 3.0: Lógica de atualização (NÃO REMOVE MAIS)
             const presenteIndex = todosOsPresentes.findIndex(p => p.id === presente.id);
             if (presenteIndex !== -1) {
                 if (data.presente.status === 'pago') {
-                    // Item (ou última cota) foi comprado
                     todosOsPresentes[presenteIndex].esgotado = true; 
                     todosOsPresentes[presenteIndex].cotas_disponiveis = 0;
                 } else {
-                    // Cota foi comprada, mas ainda restam
                     todosOsPresentes[presenteIndex].cotas_disponiveis = data.presente.cotas_disponiveis;
                 }
             }
             
-            // Re-renderiza a lista para mostrar o item esgotado/atualizado
             renderizarPresentes(todosOsPresentes);
 
             const linkWhats = `${WHATSAPP_LINK_BASE}%20*${presente.nome}*`;

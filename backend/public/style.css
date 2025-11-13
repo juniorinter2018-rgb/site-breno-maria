@@ -1,4 +1,4 @@
-/* Estilos Gerais (com coração azul) */
+/* Estilos Gerais (com link de orçamento no footer) */
 :root {
     --cor-principal-verde: #005A9C; 
     --cor-acento-dourado: #B8860B;
@@ -224,7 +224,7 @@ h1, h2 {
 }
 
 .btn-presentear:disabled {
-    background-color: #f1f1f1;
+    background-color: #f1f1ff;
     border-color: #ddd;
     color: #aaa;
     cursor: not-allowed;
@@ -314,6 +314,31 @@ footer {
     letter-spacing: 1px;
 }
 
+/* ############ NOVO ESTILO PARA O WHATSAPP ############ */
+.orcamento {
+    font-size: 0.9rem;
+    font-weight: 400;
+    text-transform: none; /* Tira o uppercase do footer */
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+    margin-bottom: 0; /* Remove margem extra */
+    color: #f0f0f0; /* Um pouco mais claro que o branco total */
+    opacity: 0.8;
+}
+
+.orcamento a {
+    color: #FFFFFF; /* Branco para destacar o link */
+    font-weight: 700; /* Deixa o "Entre em contato" em negrito */
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.orcamento a:hover {
+    color: var(--cor-acento-dourado); /* Fica dourado ao passar o mouse */
+}
+/* ############ FIM DO NOVO ESTILO ############ */
+
+
 @keyframes floatUp {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
@@ -338,7 +363,7 @@ footer {
     position: absolute;
     bottom: -50px;
     font-size: 2rem;
-    color: var(--cor-principal-verde); /* <-- MUDANÇA AQUI (para azul) */
+    color: var(--cor-principal-verde); /* Coração azul */
     animation: floatHeart 4s linear forwards;
 }
 
